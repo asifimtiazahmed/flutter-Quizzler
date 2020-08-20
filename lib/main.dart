@@ -38,11 +38,13 @@ class _QuizPageState extends State<QuizPage> {
    setState(() {
      if (quizBrain.isFinished()) {
        //RFlutter Alert button widget below
+       int scoreRecvd = quizBrain.scoreGetter();
+       int totalScore = quizBrain.getNoOfQuestions();
        Alert(
          context: context,
          type: AlertType.success,
          title: "CONGRATULATIONS",
-         desc: "You have completed the Quiz",
+         desc: "You have completed the Quiz. You got $scoreRecvd/$totalScore Correct!",
          buttons: [
            DialogButton(
              child: Text(
@@ -60,10 +62,11 @@ class _QuizPageState extends State<QuizPage> {
        scoreKeeper.clear();
      } else {
        if (userPickedAnswer == correctAns) {
-         print('User got it right');
+         //print('User got it right');
          scoreKeeper.add(Icon(Icons.check, color: Colors.green,));
+         quizBrain.scoreSetter(); //adds score as player gets it right
        } else {
-         print('User got it wrong');
+         //print('User got it wrong');
          //The user picked false.
          scoreKeeper.add(Icon(Icons.close, color: Colors.red,));
        }

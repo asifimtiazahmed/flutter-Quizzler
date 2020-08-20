@@ -1,7 +1,9 @@
 import 'question.dart';
+
 class QuizBrain {
   int _questionNumber = 0;
-  List <Question> _question_bank = [
+  int _score = 0;
+  List <Question> _questionBank = [
     Question('You can lead a cow down stairs but not up stairs.', false),
     Question('Approximately one quarter of human bones are in the feet.', true),
     Question('A slug\'s blood is green.', true),
@@ -29,35 +31,46 @@ class QuizBrain {
   ];
 
   void nextQuestion() {
-    if (_questionNumber < _question_bank.length - 1) {
+    if (_questionNumber < _questionBank.length - 1) {
       _questionNumber++;
     }
   }
 
   String getQuestion() {
-    return _question_bank[_questionNumber].questionText;
+    return _questionBank[_questionNumber].questionText;
   }
 
   bool getAnswer() {
-    return _question_bank[_questionNumber].questionAnswer;
+    return _questionBank[_questionNumber].questionAnswer;
   }
 
   bool isFinished() {
     bool areAllQestionsFinished = false;
-    if (_questionNumber < _question_bank.length - 1) {
+    if (_questionNumber < _questionBank.length - 1) {
       areAllQestionsFinished = false;
-      print('returning false, still more questions left');
+     // print('returning false, still more questions left');
     }
     else {
       areAllQestionsFinished = true;
-      print('returning true, all questions are done');
+    //  print('returning true, all questions are done');
     }
     return areAllQestionsFinished;
   }
 
   void reset(){
     _questionNumber = 0;
+    _score=0;
   }
 
+  void scoreSetter(){
+    _score++;
+  }
+
+  int scoreGetter(){
+    return _score;
+  }
+int getNoOfQuestions(){
+    return _questionBank.length;
+}
 
 }
