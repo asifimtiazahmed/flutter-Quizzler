@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'quiz_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 QuizBrain quizBrain = QuizBrain();
 
@@ -9,6 +10,7 @@ class Quizzler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, //added from an example
       home: Scaffold(
         backgroundColor: Colors.grey.shade900,
         body: SafeArea(
@@ -31,7 +33,44 @@ class _QuizPageState extends State<QuizPage> {
 
  List <Icon> scoreKeeper = [ ]; //Use angle brackets to enable data type (typesafe)
 
- bool correctAns;
+ void checkAnswer(bool userPickedAnswer){
+   bool correctAns = quizBrain.getAnswer(); //referring to the List of question_book, and getting the index of questionNumber and then getting the string property of questionAnswer
+   setState(() {
+     if (quizBrain.isFinished()) {
+       //RFlutter Alert button widget below
+       Alert(
+         context: context,
+         type: AlertType.success,
+         title: "CONGRATULATIONS",
+         desc: "You have completed the Quiz",
+         buttons: [
+           DialogButton(
+             child: Text(
+               "RESET",
+               style: TextStyle(color: Colors.white, fontSize: 20),
+             ),
+             onPressed: () => Navigator.pop(context),
+             width: 120,
+           )
+         ],
+       ).show();
+       //resetting the question Number
+       quizBrain.reset();
+       //Emptying out the scorekeeper.
+       scoreKeeper.clear();
+     } else {
+       if (userPickedAnswer == correctAns) {
+         print('User got it right');
+         scoreKeeper.add(Icon(Icons.check, color: Colors.green,));
+       } else {
+         print('User got it wrong');
+         //The user picked false.
+         scoreKeeper.add(Icon(Icons.close, color: Colors.red,));
+       }
+       quizBrain.nextQuestion();
+     }
+   });
+ }
 
  //TODO: Add an API here to get list
   @override
@@ -70,19 +109,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                correctAns = quizBrain.getAnswer();
-                if(correctAns == true){
-                  print('User got it right');
-                } else print('User got it wrong');
-                //The user picked true.
-                setState(() {
-                  quizBrain.nextQuestion();
-                  scoreKeeper.add(
-                    Icon(Icons.check,
-                      color: Colors.green,),
-                  );
-                });
-
+                checkAnswer(true);
               },
             ),
           ),
@@ -100,20 +127,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                correctAns = quizBrain.getAnswer(); //referring to the List of question_book, and getting the index of questionNumber and then getting the string property of questionAnswer
-                if(correctAns == false){
-                  print('User got it right');
-                } else print('User got it wrong');
-                //The user picked false.
-                setState(() {
-                  quizBrain.nextQuestion();
-                  scoreKeeper.add(
-                    Icon(
-                      Icons.close,
-                      color: Colors.red,
-                    ),
-                  );
-                });
+                checkAnswer(false);
               },
             ),
           ),
